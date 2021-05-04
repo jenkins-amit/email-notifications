@@ -11,9 +11,6 @@ node {
     'FAILURE': 'danger',
   ]
 
-  def getBuildUser() {
-    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
-  }
 
   try {
     stage('build') {
