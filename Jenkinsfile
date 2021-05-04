@@ -6,6 +6,15 @@ node {
           [$class: 'RequesterRecipientProvider']
   ])
 
+  def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+  ]
+
+  def getBuildUser() {
+    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+  }
+
   try {
     stage('build') {
       println('looking good')
@@ -29,6 +38,9 @@ node {
          replyTo: '$DEFAULT_REPLYTO', subject: subject,
          to: to, attachLog: true )
     }
+
+    // Send Slack notification
+    slackSend(color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
 
     // mark current build as a failure and throw the error
     throw e;
